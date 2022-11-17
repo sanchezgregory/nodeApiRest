@@ -5,45 +5,57 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url)); // LO debemos hacer porque cuando usamos import type module, no se tiene acceso de manera primitiva a __dirname
 // por eso creamos esta linea jutno con import * as url from 'url'
 
+// PAra enviar un archivo, no se necesita el fs de node, ya que express ya tiene algo propio para ello
 
 const app = express(); // app viene a ser el server.
 
-/**
- * res.sendFile Una forma de enviar un html directo al cliente
- */
-app.get('/first_reverse', (req,res) => {
-    res.sendFile('./static/first_reverse.html', {
-        root: __dirname // dice la ruta completa desde el root del proyecto
-    })
+app.get('/', (req,res) => {
+    res.send('hello world');
 })
-/**
- * res.end   Una forma de enviar estilo http
- * El cliente de esta forma no sabe exactamente que es, y agrega el contenido en etiquetas <pre>
- */
-app.get('/end', (req, res) => {
-    res.end('Hello world');
-});
-/**
- * res.send es la forma como lo hace por defecto express
- * y el cliente lo interpreta y lo recibe entre etiquetas <text>
- */
-app.get('/', (req,res)=> { // req recibe informacion del cliente, res es el repsonse
-    res.send('hello world'); // puede ser sendFile (lee un archivo y lo envia al front)
+// sending a img, file, video, audio
+app.get('/file', (req,res) => {
+    res.sendFile('./js.png' , {root:__dirname})
 })
 
-app.get('/about', (req,res) => {
-    res.send('acerca de');
-});
-
-app.get('/help', (req,res) => {
-    res.send('ayuda');
-});
-
-// debe ser la ruta final || Al no encontrar pag que coincida, cae aqui.
-app.use((req,res)=> {
-    res.status(404).send('page not found');
+// sending info from user
+app.get('/user', (req,res) => {
+    const user = {
+        name:"greg",
+        ape:"sans",
+        hobbies: [
+          'program'
+        ],
+        address:{
+            street:"av",
+            num:4
+        }
+    }
+    res.json(user)
 })
 
+app.get('/products', (req,res) => {
+    // validate data
+    // query a database
+    // process data
+    res.send('listing products')
+})
 
+app.post('/products', (req, res) => {
+    res.send('posting a product');
+})
+
+app.put('/products', (req, res) => {
+    res.send('updating a product');
+})
+
+app.delete('/products', (req, res) => {
+    res.send('deleting a product');
+})
+
+// Solo envía código de estado sin contenido
+// Con el 204, express no envía contenido, por mucho que se concatene el metodo end o send => sendStatus(204).end('hola) ó status(204).send('hola)
+app.get('/is_alive', (req,res) => {
+    res.sendStatus(204);
+})
 app.listen(3000);
 console.log('listening on port 3000');
