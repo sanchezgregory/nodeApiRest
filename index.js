@@ -9,6 +9,11 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url)); // LO debemo
 
 const app = express(); // app viene a ser el server.
 
+// Estos metodos de app (express) deben ser antes de las rutas, si no, no entenderá lo que viene del front
+app.use(express.text()); // Permite decodificar body tipo texto
+app.use(express.json()); // Permite decodificar body tipo json
+app.use(express.urlencoded({extended: false})) // Pueda entender formularios, datos nada complicados con extended false (en postman: x-www-form-urlencoded)
+
 app.get('/', (req,res) => {
     res.send('hello world');
 })
@@ -40,7 +45,8 @@ app.get('/products', (req,res) => {
     res.send('listing products')
 })
 
-app.post('/products', (req, res) => {
+app.post('/product', (req, res) => {
+    console.log(req.body);
     res.send('posting a product');
 })
 
