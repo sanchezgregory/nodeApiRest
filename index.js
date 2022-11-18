@@ -14,8 +14,14 @@ app.use(express.text()); // Permite decodificar body tipo texto
 app.use(express.json()); // Permite decodificar body tipo json
 app.use(express.urlencoded({extended: false})) // Pueda entender formularios, datos nada complicados con extended false (en postman: x-www-form-urlencoded)
 
-app.get('/', (req,res) => {
-    res.send('hello world');
+// receiving queryString ?x=abcdef
+app.get('/home', (req,res) => {
+    // en vez de usar req.params, se usa req.query para extraer la query de la url
+    // Express descompone el string y lo convierte en objeto de una vez
+    // Y con destructuring podemos obtenerlos fácilmente
+    console.log(req.query)
+    const { name,age } = req.query;
+    res.send(`hello world, la query es: User: ${name} y su edad es: ${age}`);
 })
 // sending a img, file, video, audio
 app.get('/file', (req,res) => {
