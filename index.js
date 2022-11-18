@@ -23,7 +23,7 @@ app.get('/file', (req,res) => {
 })
 
 // sending info from user
-app.get('/user', (req,res) => {
+app.get('/user/', (req,res) => {
     const user = {
         name:"greg",
         ape:"sans",
@@ -38,12 +38,34 @@ app.get('/user', (req,res) => {
     res.json(user)
 })
 
-app.get('/products', (req,res) => {
-    // validate data
-    // query a database
-    // process data
-    res.send('listing products')
+// Ambos params (product y cod) deben venir en la ruta.
+app.get('/product/:product/:cod', (req,res) => {
+    console.log(req.params)
+    res.status(202).json(`listing products with params Product ${req.params.product} con cod: ${req.params.cod}`)
 })
+
+app.get('/add/:x/:y', (req, res) => {
+
+    // forma antigua
+    // const x = req.params.x;
+    // const y = req.params.y;
+
+    // Form actual con destructuring
+    const {x,y} = req.params;
+
+    const result = parseInt(x) + parseInt(y);
+    res.send(`El resultado es: ${result}`);
+});
+
+app.get('/getting/:user/photo', (req,res) => {
+    const { user } = req.params;
+    // si no agregamos el return antes de res.send, continuará al próximo res.send
+   if (req.params.user === 'greg') {
+       return res.sendFile('./js.png', {root: __dirname})
+   }
+
+   res.send('Not authorized');
+});
 
 app.post('/product', (req, res) => {
     console.log(req.body);
